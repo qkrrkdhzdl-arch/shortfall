@@ -142,3 +142,5 @@ footer.foot li { margin-bottom: 4px; }
   .summary { position: static; }
   body { background: #fff; }
 }
+
+small.cite { display: block; font-size: 10.5px; color: #8a8f96; letter-spacing: 0.01em; }

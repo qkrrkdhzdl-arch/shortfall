@@ -108,6 +108,7 @@ const I18N = {
     break_word: 'break',
     hours_word: 'h',
     rates_label: 'ordinary rate',
+    short_us_rules: 'US federal rules',
   },
   ko: {
     tagline: '일한 시간은 그대로인데, 그 시간이 얼마인지는 다시 계산해 봐야 합니다.',
@@ -206,6 +207,7 @@ const I18N = {
     break_word: '휴게',
     hours_word: '시간',
     rates_label: '통상시급',
+    short_us_rules: '미국 연방 규칙',
   },
 };
 
@@ -398,15 +400,22 @@ function renderFlags(flags) {
     .join('');
 }
 
+const CITATION = {
+  kr: { overtime: 'art. 56(1)', night: 'art. 56(3)', holiday: 'art. 56(2)', weeklyHoliday: 'art. 55' },
+  us: { overtime: 'FLSA §207(a)' },
+};
+
 function renderBreakdown(result) {
   const currency = result.currency;
   const rate = money(result.settings.rate, currency);
   const rows = [];
+  const cited = CITATION[result.rulesetId] || {};
 
-  const push = (labelKey, minutes, amount, formula) => {
+  const push = (labelKey, minutes, amount, formula, citeKey) => {
     const zero = !minutes || minutes <= 0;
+    const cite = citeKey && cited[citeKey] ? `<small class="cite">${cited[citeKey]}</small>` : '';
     rows.push(`<tr class="${zero ? 'zero' : ''}">
-      <td>${t(labelKey)}</td>
+      <td>${t(labelKey)}${cite}</td>
       <td class="num">${zero ? '—' : hours(minutes)}</td>
       <td class="num">${zero ? '—' : money(amount, currency)}</td>
       <td class="formula">${zero ? '' : escapeHtml(formula)}</td>
@@ -414,22 +423,33 @@ function renderBreakdown(result) {
   };
 
   push('line_base', result.hours.worked, result.money.base, fmt('f_base', { h: formatHours(result.hours.worked), rate }));
-  push('line_overtime', result.hours.overtime, result.money.overtime, fmt('f_overtime', { h: formatHours(result.hours.overtime), rate }));
+  push('line_overtime', result.hours.overtime, result.money.overtime, fmt('f_overtime', { h: formatHours(result.hours.overtime), rate }), 'overtime');
   if (RULESETS[result.rulesetId].hasNight) {
-    push('line_night', result.hours.night, result.money.night, fmt('f_night', { h: formatHours(result.hours.night), rate }));
+    push('line_night', result.hours.night, result.money.night, fmt('f_night', { h: formatHours(result.hours.night), rate }), 'night');
   }
   if (RULESETS[result.rulesetId].hasHolidayPremium) {
     const a = formatHours(result.hours.holidayFirst8);
     const b = formatHours(result.hours.holidayOver8);
     push('line_holiday', result.hours.holidayFirst8 + result.hours.holidayOver8, result.money.holiday,
-      Number(result.hours.holidayOver8) ? fmt('f_holiday', { a, b, rate }) : fmt('f_holiday_simple', { a, rate }));
+      Number(result.hours.holidayOver8) ? fmt('f_holiday', { a, b, rate }) : fmt('f_holiday_simple', { a, rate }), 'holiday');
   }
   if (RULESETS[result.rulesetId].hasWeeklyHolidayPay) {
-    push('line_weeklyHoliday', result.hours.weeklyHoliday, result.money.weeklyHoliday, fmt('f_weekly', { h: formatHours(result.hours.weeklyHoliday), rate }));
+    push('line_weeklyHoliday', result.hours.weeklyHoliday, result.money.weeklyHoliday, fmt('f_weekly', { h: formatHours(result.hours.weeklyHoliday), rate }), 'weeklyHoliday');
   }
 
   rows.push(`<tr class="total"><td>${t('line_total')}</td><td class="num">${hours(result.hours.worked)}</td><td class="num">${money(result.money.total, currency)}</td><td class="formula"></td></tr>`);
   $('breakdown').innerHTML = rows.join('');
+
+  const assumptions = [
+    `${t('rates_label')} ${money(result.settings.rate, currency)}`,
+    result.rulesetId === 'kr'
+      ? (result.settings.workplaceSize === 'five' ? t('size_five') : t('size_under'))
+      : t('short_us_rules'),
+    result.rulesetId === 'kr'
+      ? `${t('contract_hours')} ${result.settings.contractWeeklyHours}${t('hours_word')} · ${result.settings.weeklyHoliday === false ? t('wh_no') : t('wh_yes')}`
+      : '',
+  ].filter(Boolean);
+  $('assumptionsLine').textContent = assumptions.join(' · ');
 }
 
 function renderDays(result, currency) {
@@ -624,7 +644,7 @@ function applyPreset(name) {
 
 function save() {
   try {
-    localStorage.setItem('shortfall.v1', JSON.stringify({
+    localStorage.setItem('shortfall.v2', JSON.stringify({
       lang: state.lang, country: state.country, rate: state.rate, weekStart: state.weekStart,
       size: state.size, timecard: state.timecard, payslip: state.payslip,
       contractHours: state.contractHours, scheduledDays: state.scheduledDays, weeklyHoliday: state.weeklyHoliday,
@@ -634,7 +654,7 @@ function save() {
 
 function load() {
   try {
-    const raw = localStorage.getItem('shortfall.v1');
+    const raw = localStorage.getItem('shortfall.v2');
     if (!raw) return false;
     const saved = JSON.parse(raw);
     Object.assign(state, saved);
