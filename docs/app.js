@@ -4,9 +4,9 @@
 // columns: what happened (left) and what it is worth (right). Nothing leaves
 // the browser; there is no network call after the page loads.
 
-import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=7';
-import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=7';
-import { parsePayslip, compare } from './lib/payslip.js?v=7';
+import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=8';
+import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=8';
+import { parsePayslip, compare } from './lib/payslip.js?v=8';
 
 const $ = (id) => document.getElementById(id);
 
@@ -231,8 +231,12 @@ function money(amount, currency = 'KRW') {
   if (amount == null || Number.isNaN(amount)) return '—';
   const negative = amount < 0;
   const value = Math.abs(amount);
+  // The won sign is not in every font stack; the currency is written out
+  // instead, in the form each language actually uses.
   const text = currency === 'KRW'
-    ? `₩${Math.round(value).toLocaleString('ko-KR')}`
+    ? (state.lang === 'ko'
+      ? `${Math.round(value).toLocaleString('ko-KR')}원`
+      : `KRW ${Math.round(value).toLocaleString('en-US')}`)
     : `$${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
   return negative ? `−${text}` : text;
 }
