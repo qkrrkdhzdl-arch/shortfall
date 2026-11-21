@@ -4,9 +4,9 @@
 // columns: what happened (left) and what it is worth (right). Nothing leaves
 // the browser; there is no network call after the page loads.
 
-import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=5';
-import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=5';
-import { parsePayslip, compare } from './lib/payslip.js?v=5';
+import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=6';
+import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=6';
+import { parsePayslip, compare } from './lib/payslip.js?v=6';
 
 const $ = (id) => document.getElementById(id);
 
@@ -229,8 +229,12 @@ const fmt = (key, values) => t(key).replace(/\{(\w+)\}/g, (_, name) => values[na
 
 function money(amount, currency = 'KRW') {
   if (amount == null || Number.isNaN(amount)) return '—';
-  if (currency === 'KRW') return `₩${Math.round(amount).toLocaleString('ko-KR')}`;
-  return `$${Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  const negative = amount < 0;
+  const value = Math.abs(amount);
+  const text = currency === 'KRW'
+    ? `₩${Math.round(value).toLocaleString('ko-KR')}`
+    : `$${Number(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  return negative ? `−${text}` : text;
 }
 
 function hours(minutes) {
@@ -446,7 +450,7 @@ function renderBreakdown(result) {
       ? (result.settings.workplaceSize === 'five' ? t('size_five') : t('size_under'))
       : t('short_us_rules'),
     result.rulesetId === 'kr'
-      ? `${t('contract_hours')} ${result.settings.contractWeeklyHours}${t('hours_word')} · ${result.settings.weeklyHoliday === false ? t('wh_no') : t('wh_yes')}`
+      ? `${t('contract_hours')} ${result.settings.contractWeeklyHours}${t('hours_word')} · ${t('line_weeklyHoliday')}: ${result.settings.weeklyHoliday === false ? t('wh_no') : t('wh_yes')}`
       : '',
   ].filter(Boolean);
   $('assumptionsLine').textContent = assumptions.join(' · ');
@@ -611,7 +615,7 @@ function csvCell(value) {
 const PRESETS = {
   store: {
     country: 'kr', rate: '12000', size: 'five', contractHours: '20', scheduledDays: '5', weeklyHoliday: 'yes',
-    timecard: 'Mon 13:00-18:00 break 30\nTue 13:00-18:00 break 30\nWed 13:00-18:00 break 30\nThu 13:00-18:00 break 30\nFri 13:00-18:00 break 30',
+    timecard: 'Mon 13:00-18:00 break 60\nTue 13:00-18:00 break 60\nWed 13:00-18:00 break 60\nThu 13:00-18:00 break 60\nFri 13:00-18:00 break 60',
     payslip: '기본급 240,000\n식대 100,000\n공제 합계 25,000\n실수령액 315,000',
   },
   night: {
