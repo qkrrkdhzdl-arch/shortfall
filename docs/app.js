@@ -4,9 +4,9 @@
 // columns: what happened (left) and what it is worth (right). Nothing leaves
 // the browser; there is no network call after the page loads.
 
-import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=8';
-import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=8';
-import { parsePayslip, compare } from './lib/payslip.js?v=8';
+import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=9';
+import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=9';
+import { parsePayslip, compare } from './lib/payslip.js?v=9';
 
 const $ = (id) => document.getElementById(id);
 
@@ -311,19 +311,19 @@ function render() {
   renderRows(entries.entries);
 
   const result = computeWeek(entries.entries, settings, rulesetId);
-  renderHero(result);
-  renderFlags(result.flags);
-  renderBreakdown(result);
+  const parsedPayslip = parsePayslip(state.payslip);
+  const cmp = compare(result.money, parsedPayslip.values);
 
   state._entries = entries.entries;
   state._result = result;
+  state._cmp = cmp;
 
-  const parsedPayslip = parsePayslip(state.payslip);
-  const cmp = compare(result.money, parsedPayslip.values);
+  renderHero(result);
+  renderFlags(result.flags);
+  renderBreakdown(result);
   renderCompare(cmp, parsedPayslip, currency);
   renderDays(result, currency);
   renderLetter(result, cmp, currency);
-  state._cmp = cmp;
 }
 
 function renderProblems(problems) {
