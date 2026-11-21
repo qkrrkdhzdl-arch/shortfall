@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shortfall — the payslip, re-added</title>
+<meta name="description" content="Check a week of hours against the payslip. Korea's Labor Standards Act and the US FLSA, computed in the browser, with the formula behind every number.">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%2314181d'/><text x='50' y='72' font-size='64' text-anchor='middle' fill='%23f2c64a' font-family='monospace'>S</text></svg>">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <h1>Short<span>fall</span></h1>
+      <p data-t="tagline">You worked the hours. This is what they are worth — and what the payslip says.</p>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="ko" aria-pressed="false">한국어</button>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <!-- ───────────── left: what happened ───────────── -->
+    <div class="left">
+
+      <section class="card">
+        <h2 data-t="rules_title">Rules</h2>
+        <label class="field">
+          <strong data-t="country">Country and rule set</strong>
+          <select id="country">
+            <option value="kr">Korea · 근로기준법</option>
+            <option value="us">United States · FLSA</option>
+          </select>
+        </label>
+        <div class="row">
+          <label class="field">
+            <strong data-t="rate">Ordinary hourly wage</strong>
+            <input id="rate" type="text" inputmode="decimal" value="12000" autocomplete="off">
+          </label>
+          <label class="field">
+            <strong data-t="week_start">Week begins</strong>
+            <input id="weekStart" type="date">
+          </label>
+        </div>
+        <label class="field" id="sizeField">
+          <strong data-t="size">Workplace size</strong>
+          <select id="size">
+            <option value="five" data-t-opt="size_five">Five or more employees</option>
+            <option value="under" data-t-opt="size_under">Fewer than five</option>
+          </select>
+        </label>
+        <p class="rules-note" id="rulesNote"></p>
+      </section>
+
+      <section class="card">
+        <h2 data-t="timecard">Timecard</h2>
+        <div class="presets">
+          <button type="button" class="ghost" data-preset="store" data-t="preset_store">Convenience store</button>
+          <button type="button" class="ghost" data-preset="night" data-t="preset_night">Night warehouse</button>
+          <button type="button" class="ghost" data-preset="us" data-t="preset_us">US retail, 45h</button>
+          <button type="button" class="ghost" data-preset="clear" data-t="preset_clear">Clear</button>
+        </div>
+        <label class="field">
+          <textarea id="timecard" spellcheck="false" aria-label="Timecard"></textarea>
+        </label>
+        <p class="hint" data-t="timecard_hint">One line a day: Mon 09:00-18:00 · 월 18:00~22:30 · Tue 22:00-02:00 break 30 · Sat 10-16 holiday</p>
+        <div class="problems" id="problems" aria-live="polite"></div>
+        <div class="rows" id="rows"></div>
+        <div class="actions">
+          <button type="button" class="ghost" id="addRow" data-t="add_row">Add a day</button>
+        </div>
+      </section>
+
+      <section class="card" id="contractCard">
+        <h2 data-t="contract">Contract</h2>
+        <div class="row">
+          <label class="field">
+            <strong data-t="contract_hours">Contracted hours a week</strong>
+            <input id="contractHours" type="number" min="0" max="60" step="0.5" value="20">
+          </label>
+          <label class="field">
+            <strong data-t="scheduled_days">Scheduled days a week</strong>
+            <input id="scheduledDays" type="number" min="1" max="7" step="1" value="4">
+          </label>
+        </div>
+        <label class="field" id="weeklyHolidayField">
+          <strong data-t="weekly_holiday">Weekly holiday pay (주휴수당)</strong>
+          <select id="weeklyHoliday">
+            <option value="yes" data-t-opt="wh_yes">Include it</option>
+            <option value="no" data-t-opt="wh_no">Not applicable to me</option>
+          </select>
+        </label>
+        <p class="hint" data-t="contract_hint">Weekly holiday pay needs 15 contracted hours or more a week and attendance on every scheduled day.</p>
+      </section>
+
+    </div>
+
+    <!-- ───────────── right: what it is worth ───────────── -->
+    <div class="right">
+
+      <div class="hero" id="hero">
+        <div class="kicker" data-t="hero_kicker">The week, re-added</div>
+        <div class="amount" id="heroAmount">—</div>
+        <div class="sub" id="heroSub"></div>
+        <div class="statline">
+          <div><b id="statHours">—</b><span data-t="stat_hours">hours worked</span></div>
+          <div><b id="statOt">—</b><span data-t="stat_ot">overtime hours</span></div>
+          <div><b id="statNight">—</b><span data-t="stat_night">night hours</span></div>
+          <div><b id="statRate">—</b><span data-t="stat_rate">ordinary rate</span></div>
+        </div>
+      </div>
+
+      <div id="flags" style="margin-top:16px"></div>
+
+      <section class="card" style="margin-top:16px">
+        <h2 data-t="breakdown">Where the money comes from</h2>
+        <table>
+          <thead>
+            <tr>
+              <th data-t="th_line">Line</th>
+              <th class="num" data-t="th_hours">Hours</th>
+              <th class="num" data-t="th_amount">Amount</th>
+              <th data-t="th_formula">Formula</th>
+            </tr>
+          </thead>
+          <tbody id="breakdown"></tbody>
+        </table>
+      </section>
+
+      <section class="card">
+        <h2 data-t="week_chart">The week, hour by hour</h2>
+        <div class="days" id="days"></div>
+        <div class="legend">
+          <span style="--c:#b9c0c8" data-t="leg_regular">regular</span>
+          <span style="--c:#1d4ed8" data-t="leg_overtime">overtime</span>
+          <span style="--c:#6b4ea8" data-t="leg_night">night</span>
+          <span style="--c:#f2c64a" data-t="leg_holiday">holiday</span>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2 data-t="payslip">The payslip you received</h2>
+        <label class="field">
+          <textarea id="payslip" spellcheck="false" aria-label="Payslip"></textarea>
+        </label>
+        <p class="hint" data-t="payslip_hint">Paste the lines as they appear: 기본급 1,200,000 / 연장근로수당 90,000 / 주휴수당 96,000. Labels in Korean or English.</p>
+        <div id="compareWrap"></div>
+        <div id="unreadWrap"></div>
+      </section>
+
+      <section class="card">
+        <h2 data-t="message">Ask about it, without accusing anyone</h2>
+        <p class="hint" data-t="message_hint">A message that states the hours, the calculation and the difference, and asks one question.</p>
+        <div class="letter" id="letter"></div>
+        <div class="actions">
+          <button type="button" class="ghost" id="copyLetter" data-t="copy">Copy message</button>
+          <button type="button" class="ghost" id="downloadCsv" data-t="csv">Download the calculation (CSV)</button>
+          <button type="button" class="ghost" id="printPage" data-t="print">Print</button>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <footer class="foot">
+    <h3 data-t="assumptions">What this page assumes</h3>
+    <ul id="citations"></ul>
+    <p data-t="limits">Shortfall does arithmetic on the hours and the rules you select. It is not legal advice, it does not read images, and it cannot know what your contract says. Where the law depends on a fact the app cannot see — workplace size, contract type, a rest break actually taken — it asks instead of assuming.</p>
+    <p><span data-t="tests_label">The same rules run in the test page:</span> <a href="tests.html">tests.html</a> · <a href="https://github.com/qkrrkdhzdl-arch/shortfall">source</a></p>
+  </footer>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
