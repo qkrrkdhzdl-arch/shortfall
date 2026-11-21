@@ -328,6 +328,7 @@ group('comparison');
   eq(cmp.gapTotal, -48000, 'a missing weekly holiday is a shortfall');
   ok(cmp.shortfall === true, 'marked as a shortfall');
   eq(cmp.matched, 1, 'one bucket matched');
+  eq(cmp.rows.find((row) => row.key === 'weeklyHoliday').gap, -48000, 'a bucket with no payslip line counts as zero');
 }
 {
   const computed = { base: 675, overtime: 37.5, night: 0, holiday: 0, weeklyHoliday: 0, total: 712.5 };

@@ -104,6 +104,14 @@ export function compare(computedMoney, payslipValues) {
     ? Number(payslipValues.gross)
     : known.reduce((sum, row) => sum + (row.paid || 0), 0);
 
+  // A bucket the payslip does not mention was not paid: it counts as zero once
+  // there is a payslip to compare against at all.
+  if (known.length) {
+    rows.forEach((row) => {
+      if (row.gap == null) row.gap = round2(0 - row.owed);
+    });
+  }
+
   const gapTotal = round2(paidTotal - owedTotal);
   return {
     rows,

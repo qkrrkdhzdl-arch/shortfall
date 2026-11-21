@@ -97,7 +97,8 @@ const I18N = {
     letter_hours: 'Hours I recorded: {worked}h in total ({regular}h regular, {ot}h overtime, {night}h night, {holiday}h on a holiday).',
     letter_calc: 'The calculation I get:',
     letter_paid: 'The payslip shows {paid}.',
-    letter_gap: 'The difference is {gap}.',
+    letter_gap_short: 'The payslip is {gap} short of that.',
+    letter_gap_over: 'The payslip is {gap} above that.',
     letter_ask: 'Could you check how these hours were counted? I can send the timecard I used. Thank you.',
     letter_sign: '— Park Gaon',
     csv_name: 'shortfall-calculation.csv',
@@ -194,7 +195,8 @@ const I18N = {
     letter_hours: '제가 기록한 시간은 총 {worked}시간입니다(기본 {regular}시간, 연장 {ot}시간, 야간 {night}시간, 휴일 {holiday}시간).',
     letter_calc: '제가 계산한 금액은 다음과 같습니다.',
     letter_paid: '명세서에는 {paid}으로 되어 있습니다.',
-    letter_gap: '차액은 {gap}입니다.',
+    letter_gap_short: '명세서 금액이 계산보다 {gap} 적습니다.',
+    letter_gap_over: '명세서 금액이 계산보다 {gap} 많습니다.',
     letter_ask: '이 시간이 어떻게 계산되었는지 확인해 주실 수 있을까요? 제가 쓴 근무표를 보내드릴 수 있습니다. 감사합니다.',
     letter_sign: '— 박가온',
     csv_name: 'shortfall-계산내역.csv',
@@ -526,7 +528,7 @@ function renderLetter(result, cmp, currency) {
   if (cmp && cmp.paidTotal != null) {
     lines.push('');
     lines.push(fmt('letter_paid', { paid: money(cmp.paidTotal, currency) }));
-    lines.push(fmt('letter_gap', { gap: money(cmp.gapTotal, currency) }));
+    lines.push(fmt(cmp.gapTotal < 0 ? 'letter_gap_short' : 'letter_gap_over', { gap: money(Math.abs(cmp.gapTotal), currency) }));
   }
   lines.push('');
   lines.push(t('letter_ask'));
@@ -589,7 +591,7 @@ function csvCell(value) {
 const PRESETS = {
   store: {
     country: 'kr', rate: '12000', size: 'five', contractHours: '20', scheduledDays: '5', weeklyHoliday: 'yes',
-    timecard: 'Mon 13:00-17:00\nTue 13:00-17:00\nWed 13:00-17:00\nThu 13:00-17:00\nFri 13:00-17:00',
+    timecard: 'Mon 13:00-18:00 break 30\nTue 13:00-18:00 break 30\nWed 13:00-18:00 break 30\nThu 13:00-18:00 break 30\nFri 13:00-18:00 break 30',
     payslip: '기본급 240,000\n식대 100,000\n공제 합계 25,000\n실수령액 315,000',
   },
   night: {
