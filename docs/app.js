@@ -4,9 +4,9 @@
 // columns: what happened (left) and what it is worth (right). Nothing leaves
 // the browser; there is no network call after the page loads.
 
-import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js';
-import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js';
-import { parsePayslip, compare } from './lib/payslip.js';
+import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=4';
+import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=4';
+import { parsePayslip, compare } from './lib/payslip.js?v=4';
 
 const $ = (id) => document.getElementById(id);
 
