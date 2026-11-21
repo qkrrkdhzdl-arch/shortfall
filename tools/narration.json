@@ -1,0 +1,76 @@
+{
+  "scenes": [
+    {
+      "id": "s01",
+      "shot": "title",
+      "caption": "You worked the hours. This is what they are worth.",
+      "say": "Forty one hours this week. Four of them after ten at night. A payslip with two lines on it, and nothing on it that says whether the number is right."
+    },
+    {
+      "id": "s02",
+      "shot": "01-hero.png",
+      "caption": "The week, re-added, next to the payslip.",
+      "say": "Shortfall re adds the week from the hours you actually worked, using the rules where you work, and puts the result next to the payslip."
+    },
+    {
+      "id": "s03",
+      "shot": "02-timecard.png",
+      "caption": "A timecard, written the way people write it.",
+      "say": "Write the timecard the way you already write it: nine to six. Ten at night to two in the morning. It knows the first is daytime, the second crosses midnight, and that the break comes off the paid hours."
+    },
+    {
+      "id": "s04",
+      "shot": "03-breakdown.png",
+      "caption": "Regular, overtime, night, holiday — counted apart.",
+      "say": "Each shift is split into the pieces the law pays differently. In Korea, overtime adds fifty percent, night adds fifty, holiday work adds fifty up to eight hours and a hundred beyond, and a week of fifteen hours or more earns a paid holiday."
+    },
+    {
+      "id": "s05",
+      "shot": "04-us.png",
+      "caption": "The United States is a different rule set.",
+      "say": "The United States is different, and the app says so: overtime after forty hours a week, and no night premium, because that is what the federal law provides."
+    },
+    {
+      "id": "s06",
+      "shot": "03-breakdown.png",
+      "caption": "Every line carries its formula.",
+      "say": "Every line carries the formula that made it. One hour, times thirteen thousand won, times fifty percent. Nothing here asks to be trusted: it can be checked on a calculator."
+    },
+    {
+      "id": "s07",
+      "shot": "05-payslip.png",
+      "caption": "Paste the payslip; it lands in the same buckets.",
+      "say": "Then paste the payslip. Each line is filed into the same bucket as the hours, and the difference is named."
+    },
+    {
+      "id": "s08",
+      "shot": "06-gap.png",
+      "caption": "Seventy-eight thousand won short.",
+      "say": "Here: seventy eight thousand won. The night premium was paid at half of what it should be, and one overtime hour never appeared. On a twenty hour week it is the weekly holiday pay that goes missing."
+    },
+    {
+      "id": "s09",
+      "shot": "07-letter.png",
+      "caption": "One question, without accusing anyone.",
+      "say": "It also writes the message: the hours, the calculation, the difference, and one question. No accusation, nothing to escalate."
+    },
+    {
+      "id": "s10",
+      "shot": "08-assumptions.png",
+      "caption": "It says what it assumed, and what it cannot know.",
+      "say": "And it says what it assumed: the size of the workplace, the contracted hours, and the article behind every rate. Under five employees the premiums do not apply, and the page tells you that instead of quietly paying them."
+    },
+    {
+      "id": "s11",
+      "shot": "09-tests.png",
+      "caption": "162 assertions, in the page and in the browser.",
+      "say": "A hundred and sixty two assertions run against the same rules, in the page, and in the browser you are looking at."
+    },
+    {
+      "id": "s12",
+      "shot": "10-korean.png",
+      "caption": "No account. No server. Nothing leaves the browser.",
+      "say": "No account, no server, nothing leaves the browser. Shortfall: you worked the hours. This is what they are worth."
+    }
+  ]
+}

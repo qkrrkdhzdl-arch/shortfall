@@ -80,6 +80,9 @@ button.link { border: 0; background: none; color: var(--accent); font: inherit; 
 .hero .sub { color: #cfc7b6; font-size: 13px; }
 .hero.short { background: var(--bad); }
 .hero.short .kicker, .hero.short .sub { color: #f6d7d4; }
+.hero.short .statline { border-top-color: #a8322a; }
+.hero.short .statline div { color: #f6d7d4; }
+.hero.short .statline b { color: var(--paper); }
 
 .statline { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 16px; border-top: 1px solid var(--rule); padding-top: 14px; }
 .statline div { font-size: 12px; color: var(--ink-soft); }

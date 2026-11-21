@@ -4,9 +4,9 @@
 // columns: what happened (left) and what it is worth (right). Nothing leaves
 // the browser; there is no network call after the page loads.
 
-import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=6';
-import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=6';
-import { parsePayslip, compare } from './lib/payslip.js?v=6';
+import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=7';
+import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=7';
+import { parsePayslip, compare } from './lib/payslip.js?v=7';
 
 const $ = (id) => document.getElementById(id);
 
@@ -417,7 +417,7 @@ function renderBreakdown(result) {
 
   const push = (labelKey, minutes, amount, formula, citeKey) => {
     const zero = !minutes || minutes <= 0;
-    const cite = citeKey && cited[citeKey] ? `<small class="cite">${cited[citeKey]}</small>` : '';
+    const cite = citeKey && cited[citeKey] ? ` <small class="cite">${cited[citeKey]}</small>` : '';
     rows.push(`<tr class="${zero ? 'zero' : ''}">
       <td>${t(labelKey)}${cite}</td>
       <td class="num">${zero ? '—' : hours(minutes)}</td>
