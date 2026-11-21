@@ -4,9 +4,9 @@
 // columns: what happened (left) and what it is worth (right). Nothing leaves
 // the browser; there is no network call after the page loads.
 
-import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=9';
-import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=9';
-import { parsePayslip, compare } from './lib/payslip.js?v=9';
+import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=10';
+import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=10';
+import { parsePayslip, compare } from './lib/payslip.js?v=10';
 
 const $ = (id) => document.getElementById(id);
 
@@ -409,8 +409,13 @@ function renderFlags(flags) {
 }
 
 const CITATION = {
-  kr: { overtime: 'art. 56(1)', night: 'art. 56(3)', holiday: 'art. 56(2)', weeklyHoliday: 'art. 55' },
-  us: { overtime: 'FLSA §207(a)' },
+  kr: {
+    overtime: { en: 'Art. 56(1)', ko: '제56조 ①' },
+    night: { en: 'Art. 56(3)', ko: '제56조 ③' },
+    holiday: { en: 'Art. 56(2)', ko: '제56조 ②' },
+    weeklyHoliday: { en: 'Art. 55', ko: '제55조' },
+  },
+  us: { overtime: { en: 'FLSA §207(a)', ko: 'FLSA §207(a)' } },
 };
 
 function renderBreakdown(result) {
@@ -421,7 +426,7 @@ function renderBreakdown(result) {
 
   const push = (labelKey, minutes, amount, formula, citeKey) => {
     const zero = !minutes || minutes <= 0;
-    const cite = citeKey && cited[citeKey] ? ` <small class="cite">${cited[citeKey]}</small>` : '';
+    const cite = citeKey && cited[citeKey] ? ` <small class="cite">${cited[citeKey][state.lang] || cited[citeKey].en}</small>` : '';
     rows.push(`<tr class="${zero ? 'zero' : ''}">
       <td>${t(labelKey)}${cite}</td>
       <td class="num">${zero ? '—' : hours(minutes)}</td>
