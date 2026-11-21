@@ -6,9 +6,10 @@ A part-timer works forty-one hours, four of them after ten at night, and gets a 
 
 - **Live:** https://qkrrkdhzdl-arch.github.io/shortfall/
 - **Tests:** https://qkrrkdhzdl-arch.github.io/shortfall/tests.html
-- **Demo (2 min):** see the Devpost submission
+- **Demo (2m36s):** https://youtu.be/etIpHsM8ELw
+- **Devpost:** https://devpost.com/software/shortfall
 
-![The week, re-added, next to the payslip](docs/shots/01-shortfall.png)
+![The week, re-added, next to the payslip](docs/shots/01-hero.png)
 
 ---
 
@@ -48,7 +49,7 @@ docs/
   lib/rules.js      Korea (Labor Standards Act) and US (FLSA) rule sets + computeWeek()
   lib/payslip.js    payslip labels → buckets, and the comparison
   tests.html        the suite as a page
-  tests.js          161 assertions
+  tests.js          162 assertions
 tools/
   run_tests_qjs.py  the suite without a browser (embedded engine)
   run_tests.py      the suite in Chromium (needs a browser with its system libraries)
@@ -59,14 +60,14 @@ tools/
 ### Run it
 
 ```
-python3 tools/run_tests_qjs.py     # 161/161
+python3 tools/run_tests_qjs.py     # 162/162
 python3 tools/run_tests.py         # same suite in Chromium
 python3 -m http.server -d docs 8000
 ```
 
 ## What was checked
 
-161 assertions across: clock parsing (24-hour, am/pm, Korean 오전/오후, `24:00`), weekday and date parsing, ambiguous spans (`9-6`, `12-6`, `18-2`, `22-2`), breaks in three notations, overnight splitting, night windows, daily and weekly overtime without double counting, holiday tiers, weekly holiday pay and its fifteen-hour floor, the five-employee boundary, minimum-wage flags, US weekly overtime and the absence of daily/night premiums, payslip label filing in both languages, unread lines, and the comparison itself.
+162 assertions across: clock parsing (24-hour, am/pm, Korean 오전/오후, `24:00`), weekday and date parsing, ambiguous spans (`9-6`, `12-6`, `18-2`, `22-2`), breaks in three notations, overnight splitting, night windows, daily and weekly overtime without double counting, holiday tiers, weekly holiday pay and its fifteen-hour floor, the five-employee boundary, minimum-wage flags, US weekly overtime and the absence of daily/night premiums, payslip label filing in both languages, unread lines, and the comparison itself.
 
 The three scenarios on the page are asserted end to end: a 20-hour convenience-store week (the weekly holiday pay is missing → ₩48,000 short), a 41-hour night warehouse week (night premium underpaid and one overtime hour unpaid → ₩78,000 short), and a 45-hour US retail week ($75 short).
 
