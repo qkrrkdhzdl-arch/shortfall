@@ -5,9 +5,9 @@
 // out, a weekly holiday paid twice. Open tests.html; the count at the top is
 // the result.
 
-import { parseClock, parseDayToken, parseEntryLine, parseTimecard, splitEntry, nightMinutes, formatHours, dayIndexFromDate } from './lib/time.js?v=4';
-import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=4';
-import { parsePayslip, compare, classifyLabel } from './lib/payslip.js?v=4';
+import { parseClock, parseDayToken, parseEntryLine, parseTimecard, splitEntry, nightMinutes, formatHours, dayIndexFromDate } from './lib/time.js?v=5';
+import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=5';
+import { parsePayslip, compare, classifyLabel } from './lib/payslip.js?v=5';
 
 const results = [];
 let current = '';
