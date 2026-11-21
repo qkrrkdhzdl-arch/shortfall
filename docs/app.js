@@ -4,9 +4,9 @@
 // columns: what happened (left) and what it is worth (right). Nothing leaves
 // the browser; there is no network call after the page loads.
 
-import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=10';
-import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=10';
-import { parsePayslip, compare } from './lib/payslip.js?v=10';
+import { parseTimecard, parseEntryLine, formatClock, formatHours, DAYS_EN, DAYS_KO, splitEntry, nightMinutes } from './lib/time.js?v=11';
+import { computeWeek, RULESETS, KR_MIN_WAGE, US_FEDERAL_MIN_WAGE } from './lib/rules.js?v=11';
+import { parsePayslip, compare } from './lib/payslip.js?v=11';
 
 const $ = (id) => document.getElementById(id);
 
@@ -430,8 +430,7 @@ function renderBreakdown(result) {
     rows.push(`<tr class="${zero ? 'zero' : ''}">
       <td>${t(labelKey)}${cite}</td>
       <td class="num">${zero ? '—' : hours(minutes)}</td>
-      <td class="num">${zero ? '—' : money(amount, currency)}</td>
-      <td class="formula">${zero ? '' : escapeHtml(formula)}</td>
+      <td class="num">${zero ? '—' : `${money(amount, currency)}<span class="formula">${escapeHtml(formula)}</span>`}</td>
     </tr>`);
   };
 
@@ -450,7 +449,7 @@ function renderBreakdown(result) {
     push('line_weeklyHoliday', result.hours.weeklyHoliday, result.money.weeklyHoliday, fmt('f_weekly', { h: formatHours(result.hours.weeklyHoliday), rate }), 'weeklyHoliday');
   }
 
-  rows.push(`<tr class="total"><td>${t('line_total')}</td><td class="num">${hours(result.hours.worked)}</td><td class="num">${money(result.money.total, currency)}</td><td class="formula"></td></tr>`);
+  rows.push(`<tr class="total"><td>${t('line_total')}</td><td class="num">${hours(result.hours.worked)}</td><td class="num">${money(result.money.total, currency)}</td></tr>`);
   $('breakdown').innerHTML = rows.join('');
 
   const assumptions = [
