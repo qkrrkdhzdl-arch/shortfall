@@ -12,6 +12,8 @@ const $ = (id) => document.getElementById(id);
 
 const I18N = {
   en: {
+    page_title: 'Shortfall — the payslip, re-added',
+    page_desc: 'Check a week of hours against the payslip. Korea\'s Labor Standards Act and the US FLSA, computed in the browser, with the formula behind every number.',
     tagline: 'You worked the hours. This is what they are worth — and what the payslip says.',
     rules_title: 'Rules',
     country: 'Country and rule set',
@@ -111,6 +113,8 @@ const I18N = {
     short_us_rules: 'US federal rules',
   },
   ko: {
+    page_title: 'Shortfall — 급여명세서를 다시 계산하다',
+    page_desc: '한 주 근무시간과 급여명세서를 대조합니다. 근로기준법과 미국 FLSA를 브라우저에서 계산하고, 모든 금액에 계산식을 함께 보여줍니다.',
     tagline: '일한 시간은 그대로인데, 그 시간이 얼마인지는 다시 계산해 봐야 합니다.',
     rules_title: '적용 기준',
     country: '국가와 규칙',
@@ -211,8 +215,17 @@ const I18N = {
   },
 };
 
+// The page opens in the language the browser asks for; the toggle overrides it
+// and the choice is remembered with the rest of the state.
+function detectLang() {
+  const list = navigator.languages && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language || 'en'];
+  return list.some((tag) => /^ko/i.test(tag)) ? 'ko' : 'en';
+}
+
 const state = {
-  lang: 'en',
+  lang: detectLang(),
   country: 'kr',
   rate: '12000',
   weekStart: '',
@@ -274,6 +287,9 @@ function readSettings() {
 
 function applyLanguage() {
   document.documentElement.lang = state.lang;
+  document.title = t('page_title');
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.setAttribute('content', t('page_desc'));
   document.querySelectorAll('[data-t]').forEach((el) => {
     el.textContent = t(el.dataset.t);
   });

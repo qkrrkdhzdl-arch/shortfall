@@ -1,5 +1,7 @@
 # Shortfall
 
+[한국어 설명 (README.ko.md)](./README.ko.md)
+
 **You worked the hours. This is what they are worth — and what the payslip says.**
 
 A part-timer works forty-one hours, four of them after ten at night, and gets a payslip with two lines on it. Nothing on that payslip says whether the number is right. Shortfall takes the hours and the rules and re-adds the week, then puts the result next to the payslip and names the difference.
